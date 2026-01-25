@@ -78,6 +78,7 @@ app/
 ├── Actions/
 │   └── Fortify/          # Actions d'authentification
 ├── Concerns/              # Traits réutilisables
+├── Enums/                 # Enums PHP (Position, EmployeeStatus)
 ├── Http/
 │   ├── Controllers/      # Contrôleurs
 │   ├── Middleware/       # Middleware personnalisés
@@ -175,6 +176,33 @@ resources/js/
 
 ---
 
+### ADR-007 : Système d'Authentification Personnalisé avec Username
+
+**Contexte :** Besoin d'un système d'authentification adapté au contexte malien avec génération automatique d'identifiants.
+
+**Décision :** Implémenter un système d'authentification par username avec génération automatique depuis les données Employee.
+
+**Spécifications :**
+- **Format username** : `normalized_last_name@phone.org` (ex: `traore@12345678.org`)
+- **Mot de passe par défaut** : `ML+phone` (ex: `ML12345678`)
+- **Normalisation** : `last_name` normalisé en minuscules sans accents pour le username
+- **Première connexion** : Obligation de choisir de garder ou changer le mot de passe
+
+**Conséquences :**
+- ✅ Authentification simplifiée sans email
+- ✅ Génération automatique des identifiants
+- ✅ Sécurité : changement de mot de passe obligatoire à la première connexion
+- ✅ Cohérence avec les données Employee
+- ⚠️ Format de mot de passe par défaut faible (d'où l'obligation de changement)
+
+**Implémentation :**
+- Migration : Ajout de `username` et `password_changed_at` à `users`, `email` nullable
+- `CreateNewUser` : Génération automatique username/password depuis Employee
+- Middleware `RequirePasswordChange` : Force le changement de mot de passe
+- Page `FirstLogin` : Interface pour choisir de garder ou changer le mot de passe
+
+---
+
 ### ADR-004 : TypeScript pour le Frontend
 
 **Contexte :** Besoin de typage statique pour éviter les erreurs à l'exécution.
@@ -217,6 +245,24 @@ resources/js/
 - ✅ Intégration native avec Laravel
 - ✅ Datasets pour tests paramétrés
 - ✅ Meilleure expérience développeur
+
+---
+
+### ADR-008 : Organisation des Enums PHP
+
+**Contexte :** Besoin d'organiser les enums PHP de manière cohérente avec la structure Laravel moderne.
+
+**Décision :** Placer tous les enums dans `app/Enums/` avec le namespace `App\Enums`.
+
+**Conséquences :**
+- ✅ Organisation claire et séparée des types
+- ✅ Cohérence avec la structure Laravel (Models/, Controllers/, etc.)
+- ✅ Scalabilité pour ajouter de nouveaux enums
+- ✅ Conventions Laravel modernes respectées
+
+**Enums actuels :**
+- `Position` : employer, superviseur, chef_superviseur, manager
+- `EmployeeStatus` : active, inactive, suspended, terminated
 
 ---
 
@@ -300,15 +346,20 @@ form.submit(update())
 
 ## Base de Données
 
-### Modèles Principaux (À implémenter)
+### Modèles Principaux
 
 1. **User** (existant)
    - Authentification et profil utilisateur
+   - Champs : `id`, `name`, `username`, `email`, `password`, `password_changed_at`
+   - Authentification par `username` (format : `lastname@phone.org`)
 
-2. **Employee** (à créer)
+2. **Employee** (implémenté)
    - Informations sur les employés
-   - Relation avec User
-   - Hiérarchie organisationnelle
+   - Relation avec User (belongsTo)
+   - Hiérarchie organisationnelle (manager/subordinates)
+   - Champs : `id`, `user_id`, `employee_id`, `first_name`, `last_name`, `email`, `phone`, `position`, `department`, `manager_id`, `salary`, `hire_date`, `status`
+   - Enums : `Position` (employer, superviseur, chef_superviseur, manager), `EmployeeStatus` (active, inactive, suspended, terminated)
+   - Accessors : `display_last_name` (MAJUSCULES sans accents), `normalizeLastNameForLogin()` (minuscules sans accents)
 
 3. **Questionnaire** (à créer)
    - Templates de questionnaires

@@ -46,17 +46,36 @@ Application web moderne de gestion de rapports et de collecte de données, const
 
 ---
 
+#### Gestion des Employés
+- [x] Modèle Employee avec migration complète
+  - [x] Enums Position et EmployeeStatus (PHP 8.1+)
+  - [x] Relations Eloquent (user, manager, subordinates)
+  - [x] Accessors pour normalisation des noms (affichage et login)
+  - [x] Factory et Seeder avec création d'utilisateurs associés
+  - [x] Form Requests (StoreEmployeeRequest, UpdateEmployeeRequest)
+  - [x] Tests complets (validation, relations, contraintes)
+
+#### Système d'Authentification Personnalisé
+- [x] Authentification par username (format : `lastname@phone.org`)
+- [x] Génération automatique de mot de passe par défaut (`ML+phone`)
+- [x] Première connexion obligatoire avec choix de mot de passe
+- [x] Middleware RequirePasswordChange
+- [x] Page FirstLogin avec interface boutons (shadcn-vue)
+- [x] Modification de Register.vue pour créer Employee + User
+- [x] Modification de Login.vue pour utiliser username
+- [x] Tests complets (inscription, première connexion, authentification)
+
 ## En Cours
 
 ### Phase 1 : Fondations (Actuel)
 - [ ] Modélisation des entités principales
-  - [ ] Modèle Employee (employés)
+  - [x] Modèle Employee (employés) ✅
   - [ ] Modèle Questionnaire
   - [ ] Modèle Question
   - [ ] Modèle Response (réponses)
   - [ ] Modèle Report (rapports)
 - [ ] Système de permissions et rôles
-  - [ ] Hiérarchie organisationnelle
+  - [x] Hiérarchie organisationnelle (manager/subordinates) ✅
   - [ ] Rôles utilisateurs (admin, manager, employee)
   - [ ] Permissions granulaires
 
@@ -120,9 +139,9 @@ Aucun blocage actuellement.
 
 ## Prochaines Étapes Immédiates
 
-1. **Modélisation des données** : Créer les modèles Eloquent et migrations pour les entités principales
-2. **Système de rôles** : Implémenter un système de permissions basé sur les rôles
-3. **Interface de gestion** : Créer les premières pages de gestion (employés)
+1. **Interface de gestion des employés** : Créer les pages CRUD pour la gestion des employés
+2. **Système de rôles** : Implémenter un système de permissions basé sur les positions
+3. **Modélisation des questionnaires** : Créer les modèles Questionnaire, Question et Response
 
 ---
 

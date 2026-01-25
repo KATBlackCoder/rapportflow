@@ -9,8 +9,35 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+### Added
+- Modèle Employee avec migration complète
+  - Enums Position et EmployeeStatus (PHP 8.1+)
+  - Relations Eloquent (user, manager, subordinates)
+  - Accessors pour normalisation des noms (affichage et login)
+  - Factory et Seeder avec création d'utilisateurs associés
+  - Form Requests (StoreEmployeeRequest, UpdateEmployeeRequest)
+  - Tests complets (validation, relations, contraintes, normalisation)
+- Système d'authentification personnalisé
+  - Authentification par username (format : `lastname@phone.org`)
+  - Génération automatique de mot de passe par défaut (`ML+phone`)
+  - Première connexion obligatoire avec choix de mot de passe
+  - Middleware RequirePasswordChange
+  - Page FirstLogin avec interface boutons (shadcn-vue)
+  - Modification de Register.vue pour créer Employee + User
+  - Modification de Login.vue pour utiliser username
+  - Tests complets (inscription, première connexion, authentification)
+- Organisation des enums dans `app/Enums/`
+- Seeder avec employés de test (Manager, Chef Superviseur, Superviseur, Employer)
+
 ### Changed
 - Retrait de l'authentification à deux facteurs (2FA) de l'application
+- Champ `phone` dans Employee rendu obligatoire (NOT NULL)
+- Structure des enums : déplacés de `app/` vers `app/Enums/` avec namespace `App\Enums`
+
+### Fixed
+- Correction de la validation dans FirstLoginController pour permettre l'action "keep" sans password
+- Correction de la redirection vers le dashboard après "Keep the default password"
+- Ajout de l'import manquant `Model` dans le modèle Employee
 
 ---
 
@@ -112,4 +139,4 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
-*Dernière mise à jour : 25 janvier 2025*
+*Dernière mise à jour : 25 janvier 2025 (après-midi)*

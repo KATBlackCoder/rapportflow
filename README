@@ -1,10 +1,38 @@
 # RapportFlow
 
-Application web moderne de gestion de rapports et de collecte de données, construite avec Laravel et Vue.js.
+Application web moderne de gestion de rapports et de collecte de données, construite avec Laravel 12 et Vue.js 3.
 
 ## 📋 Description
 
 RapportFlow est une application full-stack permettant la gestion d'employés, la collecte de données via questionnaires, et la génération de rapports automatisés. L'application est conçue pour un contexte organisationnel avec hiérarchie et permissions différenciées.
+
+## ✨ Fonctionnalités
+
+### ✅ Implémentées
+
+- **Gestion des Employés**
+  - Modèle Employee avec relations hiérarchiques (manager/subordinates)
+  - Positions : Employé, Superviseur, Chef superviseur, Manager
+  - Statuts : Actif, Inactif, Suspendu, Terminé
+  - Normalisation automatique des noms (affichage et login)
+
+- **Système d'Authentification Personnalisé**
+  - Authentification par username (format : `lastname@phone.org`)
+  - Génération automatique de mot de passe par défaut (`ML+phone`)
+  - Première connexion obligatoire pour changer le mot de passe
+  - Création automatique d'utilisateur lors de l'inscription d'un employé
+
+- **Interface Utilisateur**
+  - Pages d'authentification (Login, Register, First Login)
+  - Dashboard
+  - Gestion du profil utilisateur
+  - Thème clair/sombre
+
+### 🚧 En Développement
+
+- Système de questionnaires
+- Collecte de données
+- Génération de rapports
 
 ## 🚀 Stack Technique
 
@@ -36,3 +64,147 @@ RapportFlow est une application full-stack permettant la gestion d'employés, la
 - Composer
 - Node.js 18+ et npm
 - Base de données (MySQL, PostgreSQL ou SQLite)
+
+### Étapes d'installation
+
+1. **Cloner le repository**
+   ```bash
+   git clone <repository-url>
+   cd rapportflow
+   ```
+
+2. **Installer les dépendances PHP**
+   ```bash
+   composer install
+   ```
+
+3. **Installer les dépendances Node.js**
+   ```bash
+   npm install
+   ```
+
+4. **Configurer l'environnement**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+5. **Configurer la base de données**
+   - Modifier le fichier `.env` avec vos paramètres de base de données
+   - Ou utiliser SQLite (par défaut) : `touch database/database.sqlite`
+
+6. **Exécuter les migrations et seeders**
+   ```bash
+   php artisan migrate --seed
+   ```
+
+7. **Lancer l'application en développement**
+   ```bash
+   composer run dev
+   ```
+   Cette commande lance simultanément :
+   - Le serveur Laravel
+   - Le serveur Vite (hot reload)
+   - Les workers de queue
+   - Les logs en temps réel
+
+## 🎯 Utilisation
+
+### Authentification
+
+L'application utilise un système d'authentification personnalisé :
+
+- **Format du username** : `lastname@phone.org`
+  - Exemple : `traore@12345678.org` (pour "Traoré" avec téléphone "12345678")
+  - Le nom est normalisé (minuscules, sans accents)
+
+- **Mot de passe par défaut** : `ML+phone`
+  - Exemple : `ML12345678` (pour téléphone "12345678")
+  - Le changement de mot de passe est obligatoire à la première connexion
+
+### Comptes de test
+
+Après avoir exécuté les seeders, vous pouvez vous connecter avec :
+
+- **Username** : `test@12345678.org`
+- **Password** : `ML12345678`
+
+Ou avec les employés créés par le seeder (voir `database/seeders/DatabaseSeeder.php`).
+
+## 🧪 Tests
+
+```bash
+# Exécuter tous les tests
+php artisan test
+
+# Exécuter les tests avec couverture
+php artisan test --coverage
+
+# Exécuter un fichier de test spécifique
+php artisan test tests/Feature/Employee/EmployeeTest.php
+```
+
+## 🛠️ Commandes Utiles
+
+```bash
+# Formater le code PHP
+vendor/bin/pint
+
+# Générer les routes TypeScript (Wayfinder)
+php artisan wayfinder:generate
+
+# Réinitialiser la base de données
+php artisan migrate:fresh --seed
+
+# Voir les routes disponibles
+php artisan route:list
+```
+
+## 📚 Documentation
+
+- [Architecture](./docs/ARCHITECTURE.md) - Architecture détaillée de l'application
+- [Progression](./docs/PROGRESS.md) - État d'avancement du projet
+- [Tâches](./docs/tasks/TASKS.md) - Liste des tâches à réaliser
+- [Changelog](./docs/CHANGELOG.md) - Historique des modifications
+
+## 📝 Structure du Projet
+
+```
+rapportflow/
+├── app/
+│   ├── Actions/          # Actions Fortify (authentification)
+│   ├── Enums/            # Enums PHP (Position, EmployeeStatus)
+│   ├── Http/
+│   │   ├── Controllers/  # Contrôleurs
+│   │   ├── Middleware/   # Middleware personnalisés
+│   │   └── Requests/     # Form Requests (validation)
+│   └── Models/           # Modèles Eloquent
+├── database/
+│   ├── factories/        # Factories pour tests
+│   ├── migrations/       # Migrations de base de données
+│   └── seeders/          # Seeders
+├── resources/
+│   └── js/
+│       ├── components/   # Composants Vue réutilisables
+│       ├── layouts/      # Layouts de pages
+│       ├── pages/        # Pages Inertia
+│       └── types/        # Types TypeScript
+├── routes/               # Routes Laravel
+└── tests/                # Tests Pest
+```
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! Veuillez suivre les conventions de code du projet :
+
+- PHP : Formaté avec Laravel Pint
+- JavaScript/TypeScript : Formaté avec Prettier
+- Tests : Écrire des tests pour toute nouvelle fonctionnalité
+
+## 📄 Licence
+
+[À définir]
+
+## 👥 Auteurs
+
+[À définir]

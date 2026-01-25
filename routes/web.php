@@ -12,6 +12,11 @@ Route::get('/', function () {
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', \App\Http\Middleware\RequirePasswordChange::class])->name('dashboard');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('first-login', [\App\Http\Controllers\Auth\FirstLoginController::class, 'show'])->name('first-login.show');
+    Route::post('first-login', [\App\Http\Controllers\Auth\FirstLoginController::class, 'update'])->name('first-login.update');
+});
 
 require __DIR__.'/settings.php';

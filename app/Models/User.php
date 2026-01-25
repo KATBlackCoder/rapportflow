@@ -19,8 +19,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
+        'password_changed_at',
     ];
 
     /**
@@ -43,6 +45,15 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'password_changed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Check if the user has changed their password.
+     */
+    public function hasChangedPassword(): bool
+    {
+        return $this->password_changed_at !== null;
     }
 }
