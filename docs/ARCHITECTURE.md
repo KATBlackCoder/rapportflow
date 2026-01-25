@@ -84,6 +84,7 @@ app/
 │   ├── Middleware/       # Middleware personnalisés
 │   └── Requests/         # Form Requests (validation)
 ├── Models/               # Modèles Eloquent
+├── Policies/             # Policies d'autorisation
 └── Providers/            # Service Providers
 
 bootstrap/
@@ -107,6 +108,7 @@ database/
 resources/js/
 ├── components/           # Composants Vue réutilisables
 │   ├── ui/              # Composants UI (shadcn-vue)
+│   ├── EmployeeFormDialog.vue  # Dialog pour créer/éditer employé
 │   └── ...
 ├── layouts/             # Layouts de pages
 │   ├── app/             # Layout principal avec sidebar
@@ -114,6 +116,8 @@ resources/js/
 ├── pages/               # Pages Inertia (équivalent aux vues)
 │   ├── auth/            # Pages d'authentification
 │   ├── settings/        # Pages de paramètres
+│   ├── Employees/       # Pages de gestion des employés
+│   │   └── Index.vue    # Liste des employés avec CRUD
 │   └── ...
 ├── types/               # Types TypeScript
 └── app.ts               # Point d'entrée de l'application
@@ -266,6 +270,31 @@ resources/js/
 
 ---
 
+### ADR-009 : Autorisation avec Policies basée sur les Positions
+
+**Contexte :** Besoin d'un système d'autorisation pour restreindre l'accès aux fonctionnalités selon la position de l'employé.
+
+**Décision :** Utiliser Laravel Policies avec vérification de la position Employee pour autoriser les actions.
+
+**Spécifications :**
+- Seuls les employés avec position `Manager` ou `ChefSuperviseur` peuvent accéder à la gestion des employés
+- Vérification via la relation `User->employee->position`
+- Policies dans `app/Policies/` pour chaque modèle nécessitant une autorisation
+
+**Conséquences :**
+- ✅ Autorisation centralisée et maintenable
+- ✅ Cohérence avec les conventions Laravel
+- ✅ Facile à étendre pour d'autres modèles
+- ✅ Tests d'autorisation simplifiés
+- ⚠️ Nécessite que chaque User ait un Employee associé
+
+**Implémentation :**
+- `EmployeePolicy` : Méthodes `viewAny`, `view`, `create`, `update`, `delete`
+- Vérification dans les contrôleurs via `Gate::authorize()`
+- Données employee partagées via `HandleInertiaRequests` pour l'UI
+
+---
+
 ## Patterns de Code
 
 ### Contrôleurs
@@ -310,7 +339,34 @@ const form = useForm({
   name: '',
   email: '',
 })
+
+const submit = () => {
+  form.post('/users', {
+    onSuccess: () => {
+      // Redirection gérée par le serveur
+    },
+  })
+}
 </script>
+```
+
+### Composants Dialog pour CRUD
+
+Les opérations CRUD utilisent des Dialogs shadcn-vue pour une meilleure UX :
+
+```vue
+<Dialog :open="dialogOpen" @update:open="handleClose">
+  <DialogContent>
+    <form @submit.prevent="submit">
+      <!-- Champs du formulaire -->
+      <DialogFooter>
+        <Button type="submit" :disabled="form.processing">
+          Enregistrer
+        </Button>
+      </DialogFooter>
+    </form>
+  </DialogContent>
+</Dialog>
 ```
 
 ### Routes TypeScript
@@ -322,6 +378,8 @@ import { update } from '@/actions/App/Http/Controllers/ProfileController'
 
 form.submit(update())
 ```
+
+**Composant Form Inertia + Wayfinder :** Utiliser `:action="Controller.action()"` (objet `{ url, method }`). Ne pas utiliser `*.form()` — cette variante n’existe que si Wayfinder est généré avec `php artisan wayfinder:generate --with-form`. Sans `--with-form`, les formulaires (Profile, Password, DeleteUser) passent l’action via `:action`.
 
 ---
 
@@ -339,8 +397,10 @@ form.submit(update())
 - Protection CSRF automatique via Laravel
 
 ### Autorisation
-- Système de permissions à implémenter (Gates/Policies)
-- Hiérarchie organisationnelle à définir
+- **Policies Laravel** : Utilisation de Policies pour l'autorisation basée sur les positions
+  - `EmployeePolicy` : Autorise uniquement Manager et ChefSuperviseur pour les opérations CRUD
+  - Vérification via `Gate::authorize()` dans les contrôleurs
+- Hiérarchie organisationnelle : Basée sur la relation `manager_id` dans Employee
 
 ---
 
@@ -360,6 +420,8 @@ form.submit(update())
    - Champs : `id`, `user_id`, `employee_id`, `first_name`, `last_name`, `email`, `phone`, `position`, `department`, `manager_id`, `salary`, `hire_date`, `status`
    - Enums : `Position` (employer, superviseur, chef_superviseur, manager), `EmployeeStatus` (active, inactive, suspended, terminated)
    - Accessors : `display_last_name` (MAJUSCULES sans accents), `normalizeLastNameForLogin()` (minuscules sans accents)
+   - **CRUD complet** : Création, lecture, mise à jour, suppression via `EmployeeController`
+   - **Autorisation** : Accès restreint via `EmployeePolicy` (Manager/ChefSuperviseur uniquement)
 
 3. **Questionnaire** (à créer)
    - Templates de questionnaires

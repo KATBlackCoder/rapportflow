@@ -28,16 +28,39 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
   - Tests complets (inscription, première connexion, authentification)
 - Organisation des enums dans `app/Enums/`
 - Seeder avec employés de test (Manager, Chef Superviseur, Superviseur, Employer)
+- Page Employees avec gestion complète
+  - Page Index avec tableau utilisant shadcn-vue Table
+  - Autorisation via EmployeePolicy (Manager/ChefSuperviseur uniquement)
+  - Recherche en temps réel côté client
+  - Pagination avec composants shadcn-vue Button
+  - Affichage avec Avatar, Badges pour statut et position
+  - Navigation conditionnelle dans AppSidebar (lien visible uniquement pour Manager/ChefSuperviseur)
+- CRUD complet pour les employés
+  - Composant EmployeeFormDialog pour créer/éditer
+  - Formulaire avec validation Inertia useForm
+  - Champs : ID employé, prénom, nom, email, téléphone, poste, statut, département, manager, salaire, date d'embauche
+  - Suppression avec dialog de confirmation
+  - Menu dropdown avec actions (Modifier, Supprimer) sur chaque ligne
+  - Gestion des erreurs de validation affichées sous chaque champ
+- Système d'autorisation avec Policies
+  - EmployeePolicy pour gérer l'accès aux opérations CRUD
+  - Vérification basée sur la position Employee (Manager/ChefSuperviseur)
+  - Partage des données employee via HandleInertiaRequests pour l'UI
+  - Tests d'autorisation (EmployeeAccessTest)
 
 ### Changed
 - Retrait de l'authentification à deux facteurs (2FA) de l'application
 - Champ `phone` dans Employee rendu obligatoire (NOT NULL)
 - Structure des enums : déplacés de `app/` vers `app/Enums/` avec namespace `App\Enums`
+- UserFactory : Ajout de la génération automatique de `username` dans la factory
+- HandleInertiaRequests : Partage des données employee de l'utilisateur pour l'UI
 
 ### Fixed
 - Correction de la validation dans FirstLoginController pour permettre l'action "keep" sans password
 - Correction de la redirection vers le dashboard après "Keep the default password"
 - Ajout de l'import manquant `Model` dans le modèle Employee
+- Correction de l'erreur « `ProfileController.update.form is not a function` » sur Settings (Profile, Password, Delete User)
+  - Remplacement de `v-bind="*.form()"` par `:action="*()"` ; Wayfinder est généré sans `--with-form`, le composant Form Inertia accepte l'objet `{ url, method }` en prop `action`
 
 ---
 
@@ -139,4 +162,4 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
-*Dernière mise à jour : 25 janvier 2025 (après-midi)*
+*Dernière mise à jour : 25 janvier 2025*

@@ -54,6 +54,19 @@ Application web moderne de gestion de rapports et de collecte de données, const
   - [x] Factory et Seeder avec création d'utilisateurs associés
   - [x] Form Requests (StoreEmployeeRequest, UpdateEmployeeRequest)
   - [x] Tests complets (validation, relations, contraintes)
+- [x] Page Employees avec autorisation
+  - [x] EmployeePolicy pour autoriser uniquement Manager et ChefSuperviseur
+  - [x] Page Index avec tableau utilisant shadcn-vue Table
+  - [x] Recherche en temps réel côté client
+  - [x] Pagination avec composants shadcn-vue
+  - [x] Affichage des employés avec Avatar, Badges, etc.
+- [x] CRUD complet pour les employés
+  - [x] Création d'employé via Dialog (EmployeeFormDialog)
+  - [x] Modification d'employé via Dialog
+  - [x] Suppression d'employé avec confirmation
+  - [x] Formulaire avec validation Inertia useForm
+  - [x] Gestion des erreurs de validation
+  - [x] Tests d'autorisation (EmployeeAccessTest)
 
 #### Système d'Authentification Personnalisé
 - [x] Authentification par username (format : `lastname@phone.org`)
@@ -76,18 +89,19 @@ Application web moderne de gestion de rapports et de collecte de données, const
   - [ ] Modèle Report (rapports)
 - [ ] Système de permissions et rôles
   - [x] Hiérarchie organisationnelle (manager/subordinates) ✅
-  - [ ] Rôles utilisateurs (admin, manager, employee)
-  - [ ] Permissions granulaires
+  - [x] Autorisation basée sur les positions (EmployeePolicy) ✅
+  - [x] Accès restreint aux employés (Manager/ChefSuperviseur uniquement) ✅
+  - [ ] Permissions granulaires par fonctionnalité
 
 ---
 
 ## À Venir
 
 ### Phase 2 : Gestion des Employés
-- [ ] CRUD complet pour les employés
+- [x] CRUD complet pour les employés ✅
+- [x] Interface de liste et recherche ✅
 - [ ] Hiérarchie organisationnelle (départements, équipes)
 - [ ] Gestion des affectations
-- [ ] Interface de liste et recherche
 - [ ] Export des données employés
 
 ### Phase 3 : Système de Questionnaires
@@ -134,14 +148,15 @@ Aucun blocage actuellement.
 - Inertia.js v2 permet les props différées et le lazy loading
 - Laravel Wayfinder génère automatiquement les types TypeScript pour les routes
 - Pest v4 offre des capacités de tests navigateur pour les tests E2E futurs
+- Paramètres (Profile, Password, Delete User) : formulaires avec `:action="Controller.action()"` (Wayfinder sans `--with-form`)
 
 ---
 
 ## Prochaines Étapes Immédiates
 
-1. **Interface de gestion des employés** : Créer les pages CRUD pour la gestion des employés
-2. **Système de rôles** : Implémenter un système de permissions basé sur les positions
-3. **Modélisation des questionnaires** : Créer les modèles Questionnaire, Question et Response
+1. **Amélioration de la gestion des employés** : Ajouter l'export des données, filtres avancés
+2. **Modélisation des questionnaires** : Créer les modèles Questionnaire, Question et Response
+3. **Système de permissions avancé** : Permissions granulaires par fonctionnalité
 
 ---
 
