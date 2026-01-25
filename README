@@ -1,0 +1,38 @@
+# RapportFlow
+
+Application web moderne de gestion de rapports et de collecte de données, construite avec Laravel et Vue.js.
+
+## 📋 Description
+
+RapportFlow est une application full-stack permettant la gestion d'employés, la collecte de données via questionnaires, et la génération de rapports automatisés. L'application est conçue pour un contexte organisationnel avec hiérarchie et permissions différenciées.
+
+## 🚀 Stack Technique
+
+### Backend
+- **Laravel** 12.0
+- **PHP** 8.4.1
+- **Inertia.js** v2 (communication SPA)
+- **Laravel Fortify** v1.30 (authentification)
+- **Laravel Wayfinder** v0.1.9 (routes TypeScript)
+
+### Frontend
+- **Vue.js** 3.5.13
+- **TypeScript** 5.2.2
+- **Tailwind CSS** v4.1.1
+- **shadcn-vue** (composants UI)
+- **Vite** 7.0.4
+
+### Outils de Développement
+- **Pest** v4.3 (tests)
+- **Laravel Pint** v1.24 (formatage PHP)
+- **ESLint** 9.17.0 + **Prettier** 3.4.2
+- **Laravel Sail** v1.41 (Docker)
+- **Laravel Boost** v1.8 (outils MCP)
+
+## 📦 Installation
+
+### Prérequis
+- PHP 8.2 ou supérieur
+- Composer
+- Node.js 18+ et npm
+- Base de données (MySQL, PostgreSQL ou SQLite)
