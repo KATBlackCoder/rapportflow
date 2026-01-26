@@ -78,19 +78,54 @@ Application web moderne de gestion de rapports et de collecte de données, const
 - [x] Modification de Login.vue pour utiliser username
 - [x] Tests complets (inscription, première connexion, authentification)
 
+#### Gestion des Questionnaires
+- [x] Modèles Questionnaire, Question et Group avec migrations complètes
+  - [x] Enums QuestionnaireStatus, QuestionnaireTargetType et QuestionType (PHP 8.1+)
+  - [x] Relations Eloquent (questions, creator, groups, conditionalQuestion, conditionalQuestions)
+  - [x] Table pivot questionnaire_groups pour ciblage par groupes
+- [x] Form Requests (StoreQuestionnaireRequest, UpdateQuestionnaireRequest)
+  - [x] Validation complète incluant questions et conditions
+  - [x] Support des indices conditionnels pour résolution des IDs après création
+- [x] QuestionnaireController avec CRUD complet
+  - [x] Transactions pour cohérence des données (questionnaire + questions)
+  - [x] Gestion des questions avec réorganisation (ordre)
+  - [x] Support complet des questions conditionnelles avec résolution des IDs
+  - [x] Gestion correcte des contraintes de clé étrangère lors de la mise à jour
+- [x] QuestionnairePolicy pour autorisation
+  - [x] Seuls Manager et ChefSuperviseur peuvent créer/modifier/supprimer
+  - [x] Tous les utilisateurs authentifiés peuvent voir la liste et les détails
+- [x] Pages Vue Inertia complètes
+  - [x] Index.vue : Liste avec filtres (recherche, statut) et pagination
+  - [x] Create.vue : Formulaire de création avec gestion dynamique des questions
+  - [x] Edit.vue : Formulaire d'édition avec pré-remplissage
+  - [x] Show.vue : Affichage en lecture seule avec détails complets
+- [x] Types de questions supportés : text, textarea, radio, checkbox, select, number, date, email
+- [x] Gestion des options pour questions à choix multiples (radio, checkbox, select)
+  - [x] Textarea avec retours à la ligne fonctionnels (white-space: pre-wrap)
+  - [x] Stockage séparé du texte brut pour préserver les retours à la ligne
+- [x] Ciblage par type : employees, supervisors (simplifié - groupes retirés)
+- [x] Questions conditionnelles complètes
+  - [x] Disponibles pour tous les types de questions (pas seulement select/checkbox/radio)
+  - [x] Sélection de question parente (seulement select/checkbox/radio)
+  - [x] Valeur conditionnelle via Select basé sur les options de la question parente
+  - [x] Interface utilisateur complète avec validation
+- [x] Interface utilisateur avec shadcn-vue (Table, Card, Dialog, Select, Badge, etc.)
+
 ## En Cours
 
 ### Phase 1 : Fondations (Actuel)
 - [ ] Modélisation des entités principales
   - [x] Modèle Employee (employés) ✅
-  - [ ] Modèle Questionnaire
-  - [ ] Modèle Question
+  - [x] Modèle Questionnaire ✅
+  - [x] Modèle Question ✅
+  - [x] Modèle Group (groupes) ✅
   - [ ] Modèle Response (réponses)
   - [ ] Modèle Report (rapports)
 - [ ] Système de permissions et rôles
   - [x] Hiérarchie organisationnelle (manager/subordinates) ✅
   - [x] Autorisation basée sur les positions (EmployeePolicy) ✅
   - [x] Accès restreint aux employés (Manager/ChefSuperviseur uniquement) ✅
+  - [x] Autorisation pour questionnaires (QuestionnairePolicy) ✅
   - [ ] Permissions granulaires par fonctionnalité
 
 ---
@@ -105,9 +140,17 @@ Application web moderne de gestion de rapports et de collecte de données, const
 - [ ] Export des données employés
 
 ### Phase 3 : Système de Questionnaires
-- [ ] Création et édition de questionnaires
-- [ ] Types de questions (texte, choix multiple, échelle, date, etc.)
-- [ ] Logique conditionnelle
+- [x] Création et édition de questionnaires ✅
+- [x] Types de questions (texte, textarea, radio, checkbox, select, number, date, email) ✅
+- [x] Questions conditionnelles complètes (tous types de questions) ✅
+  - [x] Interface de sélection de question parente ✅
+  - [x] Valeur conditionnelle via Select basé sur options ✅
+  - [x] Résolution correcte des IDs lors de création/mise à jour ✅
+- [x] Ciblage par type (employés, superviseurs) ✅
+- [x] Gestion des options avec retours à la ligne fonctionnels ✅
+- [x] CRUD complet avec interface Inertia + shadcn-vue ✅
+- [x] Autorisation basée sur les positions (Manager/ChefSuperviseur) ✅
+- [ ] Logique conditionnelle frontend complète (affichage dynamique lors du remplissage)
 - [ ] Templates de questionnaires
 - [ ] Versioning des questionnaires
 - [ ] Attribution de questionnaires aux employés
@@ -155,9 +198,11 @@ Aucun blocage actuellement.
 ## Prochaines Étapes Immédiates
 
 1. **Amélioration de la gestion des employés** : Ajouter l'export des données, filtres avancés
-2. **Modélisation des questionnaires** : Créer les modèles Questionnaire, Question et Response
-3. **Système de permissions avancé** : Permissions granulaires par fonctionnalité
+2. **Tests pour questionnaires** : Créer les tests Pest complets (CRUD, validation, permissions, questions conditionnelles)
+3. **Logique conditionnelle frontend** : Implémenter l'affichage dynamique des questions conditionnelles lors du remplissage
+4. **Collecte de réponses** : Implémenter TASK-004 (Page Rapport - Remplissage des questionnaires)
+5. **Système de permissions avancé** : Permissions granulaires par fonctionnalité
 
 ---
 
-*Dernière mise à jour : 25 janvier 2025*
+*Dernière mise à jour : 26 janvier 2025*

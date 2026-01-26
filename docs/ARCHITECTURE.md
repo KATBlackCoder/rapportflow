@@ -267,6 +267,9 @@ resources/js/
 **Enums actuels :**
 - `Position` : employer, superviseur, chef_superviseur, manager
 - `EmployeeStatus` : active, inactive, suspended, terminated
+- `QuestionnaireStatus` : published, archived
+- `QuestionnaireTargetType` : employees, supervisors
+- `QuestionType` : text, textarea, radio, checkbox, select, number, date, email
 
 ---
 
@@ -290,8 +293,45 @@ resources/js/
 
 **Implémentation :**
 - `EmployeePolicy` : Méthodes `viewAny`, `view`, `create`, `update`, `delete`
+- `QuestionnairePolicy` : Méthodes `viewAny`, `view`, `create`, `update`, `delete`
 - Vérification dans les contrôleurs via `Gate::authorize()`
 - Données employee partagées via `HandleInertiaRequests` pour l'UI
+
+---
+
+### ADR-010 : Système de Gestion des Questionnaires
+
+**Contexte :** Besoin d'un système complet pour créer, gérer et cibler des questionnaires vers différents groupes d'utilisateurs.
+
+**Décision :** Implémenter un système de questionnaires avec support de types de questions variés, ciblage par type (employés, superviseurs) et questions conditionnelles complètes.
+
+**Spécifications :**
+- **Modèles** : Questionnaire, Question, Group avec table pivot questionnaire_groups
+- **Types de questions** : text, textarea, radio, checkbox, select, number, date, email
+- **Ciblage** : employees (tous), supervisors (tous) - groupes retirés pour simplification
+- **Questions conditionnelles** : 
+  - Disponibles pour tous les types de questions
+  - Question parente doit être de type select, checkbox ou radio (pour avoir des options)
+  - Valeur conditionnelle sélectionnée via Select basé sur les options de la question parente
+  - Résolution des IDs via indices lors de la création/mise à jour
+- **Gestion des options** : Textarea avec support des retours à la ligne (white-space: pre-wrap)
+- **Autorisation** : Manager et ChefSuperviseur pour CRUD, tous pour lecture
+
+**Conséquences :**
+- ✅ Système flexible pour différents types de questionnaires
+- ✅ Ciblage simplifié (employees/supervisors uniquement)
+- ✅ Support complet de questions conditionnelles avec interface intuitive
+- ✅ Gestion robuste des contraintes de clé étrangère
+- ✅ Interface utilisateur moderne avec shadcn-vue
+- ⚠️ Logique conditionnelle frontend à compléter pour affichage dynamique lors du remplissage
+
+**Implémentation :**
+- Migrations pour questionnaires, questions, groups, questionnaire_groups
+- Enums PHP pour status, target_type et question type
+- Contrôleur QuestionnaireController avec transactions et résolution des IDs conditionnels
+- Policy QuestionnairePolicy pour autorisation basée sur positions
+- Pages Vue Inertia (Index, Create, Edit, Show) avec gestion complète
+- Stockage séparé du texte brut des options pour préserver les retours à la ligne
 
 ---
 
@@ -399,6 +439,7 @@ form.submit(update())
 ### Autorisation
 - **Policies Laravel** : Utilisation de Policies pour l'autorisation basée sur les positions
   - `EmployeePolicy` : Autorise uniquement Manager et ChefSuperviseur pour les opérations CRUD
+  - `QuestionnairePolicy` : Autorise uniquement Manager et ChefSuperviseur pour les opérations CRUD, tous pour lecture
   - Vérification via `Gate::authorize()` dans les contrôleurs
 - Hiérarchie organisationnelle : Basée sur la relation `manager_id` dans Employee
 
@@ -423,19 +464,35 @@ form.submit(update())
    - **CRUD complet** : Création, lecture, mise à jour, suppression via `EmployeeController`
    - **Autorisation** : Accès restreint via `EmployeePolicy` (Manager/ChefSuperviseur uniquement)
 
-3. **Questionnaire** (à créer)
-   - Templates de questionnaires
-   - Versioning
+3. **Group** (implémenté)
+   - Groupes d'employés pour ciblage de questionnaires
+   - Champs : `id`, `name`, `description`, `created_at`, `updated_at`
+   - Relation : `questionnaires()` (belongsToMany via questionnaire_groups)
+   - **Utilisation** : Permet de cibler des questionnaires vers des groupes spécifiques d'employés
 
-4. **Question** (à créer)
-   - Questions dans les questionnaires
-   - Types de questions variés
+4. **Questionnaire** (implémenté)
+   - Templates de questionnaires avec questions associées
+   - Champs : `id`, `title`, `description`, `status`, `target_type`, `created_by`, `created_at`, `updated_at`
+   - Enums : `QuestionnaireStatus` (published, archived), `QuestionnaireTargetType` (employees, supervisors)
+   - Relations : `questions()` (HasMany ordonné par `order`), `creator()` (BelongsTo User)
+   - **CRUD complet** : Création, lecture, mise à jour, suppression via `QuestionnaireController`
+   - **Autorisation** : Accès restreint via `QuestionnairePolicy` (Manager/ChefSuperviseur pour CRUD, tous pour lecture)
+   - **Fonctionnalités** : Ciblage par type (employés, superviseurs, groupes), gestion des statuts (publié/archivé)
 
-5. **Response** (à créer)
+5. **Question** (implémenté)
+   - Questions dans les questionnaires avec support de types variés
+   - Champs : `id`, `questionnaire_id`, `type`, `question`, `required`, `order`, `options` (JSON), `conditional_question_id`, `conditional_value`, `created_at`, `updated_at`
+   - Enum : `QuestionType` (text, textarea, radio, checkbox, select, number, date, email)
+   - Relations : `questionnaire()` (BelongsTo), `conditionalQuestion()` (BelongsTo), `conditionalQuestions()` (HasMany)
+   - **Support des questions conditionnelles** : Structure en place pour affichage conditionnel basé sur réponses à d'autres questions
+   - **Options** : Stockées en JSON pour questions à choix multiples (radio, checkbox, select)
+   - **Ordre** : Gestion de l'ordre d'affichage via champ `order`
+
+6. **Response** (à créer)
    - Réponses aux questionnaires
    - Relation avec Employee et Question
 
-6. **Report** (à créer)
+7. **Report** (à créer)
    - Rapports générés
    - Templates de rapports
 
@@ -485,4 +542,4 @@ form.submit(update())
 
 ---
 
-*Dernière mise à jour : 25 janvier 2025*
+*Dernière mise à jour : 26 janvier 2025*

@@ -9,7 +9,40 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+### Changed
+- **Questionnaires** : Amélioration de la gestion des questions conditionnelles
+  - Questions conditionnelles maintenant disponibles pour tous les types de questions (pas seulement select/checkbox/radio)
+  - Valeur conditionnelle remplacée par un Select basé sur les options de la question parente (au lieu d'un Input texte)
+  - Correction de la gestion des retours à la ligne dans le textarea des options (white-space: pre-wrap)
+  - Stockage séparé du texte brut des options pour préserver l'affichage des retours à la ligne
+  - Simplification du ciblage : suppression du type "groups", conservation uniquement de "employees" et "supervisors"
+
+### Fixed
+- **Questionnaires** : Correction de la violation de contrainte de clé étrangère lors de la mise à jour
+  - Utilisation de `conditional_question_index` au lieu de `conditional_question_id` lors de la soumission
+  - Résolution correcte des IDs conditionnels après création des questions dans le contrôleur
+  - Gestion cohérente entre création et mise à jour pour éviter les erreurs de contrainte
+
 ### Added
+- Système complet de gestion des questionnaires (TASK-003)
+  - Modèles Questionnaire, Question et Group avec migrations complètes
+  - Enums QuestionnaireStatus, QuestionnaireTargetType et QuestionType (PHP 8.1+)
+  - Relations Eloquent (questions, creator, groups, conditionalQuestion, conditionalQuestions)
+  - Table pivot questionnaire_groups pour ciblage par groupes
+  - Form Requests StoreQuestionnaireRequest et UpdateQuestionnaireRequest avec validation complète
+  - QuestionnaireController avec CRUD complet et transactions pour cohérence
+  - QuestionnairePolicy pour autorisation (Manager/ChefSuperviseur pour CRUD, tous pour lecture)
+  - Pages Vue Inertia complètes (Index, Create, Edit, Show)
+    - Index avec filtres (recherche, statut) et pagination
+    - Create/Edit avec gestion dynamique des questions
+    - Show avec affichage détaillé en lecture seule
+  - Support de 8 types de questions : text, textarea, radio, checkbox, select, number, date, email
+  - Gestion des options pour questions à choix multiples (radio, checkbox, select)
+  - Ciblage par type : employees, supervisors
+  - Structure pour questions conditionnelles (conditional_question_id, conditional_value)
+  - Interface utilisateur avec shadcn-vue (Table, Card, Dialog, Select, Badge, etc.)
+  - Réorganisation des questions (flèches haut/bas)
+  - Routes resource ajoutées dans web.php
 - Modèle Employee avec migration complète
   - Enums Position et EmployeeStatus (PHP 8.1+)
   - Relations Eloquent (user, manager, subordinates)
@@ -162,4 +195,4 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
-*Dernière mise à jour : 25 janvier 2025*
+*Dernière mise à jour : 26 janvier 2025*

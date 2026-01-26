@@ -543,4 +543,59 @@ Nom stocké en DB: "Traoré" (valeur originale)
 
 ---
 
-*Dernière mise à jour : 25 janvier 2025*
+## [TASK-003] Page Questionnaires (CRUD)
+
+**Statut :** 🔴 À faire  
+**Priorité :** Moyenne  
+**Assigné à :** -  
+**Date de création :** 2026-01-25
+
+> 📄 **Voir le fichier détaillé :** [`TASK-003.md`](./TASK-003.md)
+
+### Description
+
+Créer une page complète de gestion des questionnaires (CRUD) réservée aux **managers et chefs superviseurs** permettant de :
+- Lister tous les questionnaires disponibles
+- Créer de nouveaux questionnaires
+- Modifier des questionnaires existants
+- Supprimer des questionnaires
+- Visualiser les détails d'un questionnaire
+- Assigner des questionnaires à des groupes cibles
+- Gérer des questions conditionnelles
+
+### Liens
+
+- Fichier de tâche : [`docs/tasks/TASK-003.md`](./TASK-003.md)
+- Documentation : `docs/ARCHITECTURE.md`
+- Tâche liée : TASK-004 (Page Rapport - Remplissage)
+
+---
+
+## [TASK-004] Page Rapport - Remplissage des Questionnaires
+
+**Statut :** 🔴 À faire  
+**Priorité :** Moyenne  
+**Assigné à :** -  
+**Date de création :** 2026-01-25  
+**Dépend de :** TASK-003
+
+> 📄 **Voir le fichier détaillé :** [`TASK-004.md`](./TASK-004.md)
+
+### Description
+
+Créer une page "Rapport" permettant aux **employés et superviseurs** de :
+- Voir les questionnaires qui leur sont assignés
+- Remplir les questionnaires sous forme de tableau
+- Utiliser deux modes de remplissage : manuel ligne par ligne ou copier-coller avec format spécial
+- Sauvegarder les réponses
+- Exporter les données (CSV, Excel)
+
+### Liens
+
+- Fichier de tâche : [`docs/tasks/TASK-004.md`](./TASK-004.md)
+- Documentation : `docs/ARCHITECTURE.md`
+- Tâche liée : TASK-003 (CRUD des questionnaires)
+
+---
+
+*Dernière mise à jour : 25 janvier 2026*
