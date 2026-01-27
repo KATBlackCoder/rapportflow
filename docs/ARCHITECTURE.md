@@ -301,12 +301,12 @@ resources/js/
 
 ### ADR-010 : Système de Gestion des Questionnaires
 
-**Contexte :** Besoin d'un système complet pour créer, gérer et cibler des questionnaires vers différents groupes d'utilisateurs.
+**Contexte :** Besoin d'un système complet pour créer, gérer et cibler des questionnaires vers différents types d'utilisateurs (employés, superviseurs).
 
 **Décision :** Implémenter un système de questionnaires avec support de types de questions variés, ciblage par type (employés, superviseurs) et questions conditionnelles complètes.
 
 **Spécifications :**
-- **Modèles** : Questionnaire, Question, Group avec table pivot questionnaire_groups
+- **Modèles** : Questionnaire, Question
 - **Types de questions** : text, textarea, radio, checkbox, select, number, date, email
 - **Ciblage** : employees (tous), supervisors (tous) - groupes retirés pour simplification
 - **Questions conditionnelles** : 
@@ -326,7 +326,7 @@ resources/js/
 - ⚠️ Logique conditionnelle frontend à compléter pour affichage dynamique lors du remplissage
 
 **Implémentation :**
-- Migrations pour questionnaires, questions, groups, questionnaire_groups
+- Migrations pour questionnaires, questions
 - Enums PHP pour status, target_type et question type
 - Contrôleur QuestionnaireController avec transactions et résolution des IDs conditionnels
 - Policy QuestionnairePolicy pour autorisation basée sur positions
@@ -464,11 +464,6 @@ form.submit(update())
    - **CRUD complet** : Création, lecture, mise à jour, suppression via `EmployeeController`
    - **Autorisation** : Accès restreint via `EmployeePolicy` (Manager/ChefSuperviseur uniquement)
 
-3. **Group** (implémenté)
-   - Groupes d'employés pour ciblage de questionnaires
-   - Champs : `id`, `name`, `description`, `created_at`, `updated_at`
-   - Relation : `questionnaires()` (belongsToMany via questionnaire_groups)
-   - **Utilisation** : Permet de cibler des questionnaires vers des groupes spécifiques d'employés
 
 4. **Questionnaire** (implémenté)
    - Templates de questionnaires avec questions associées
@@ -477,7 +472,7 @@ form.submit(update())
    - Relations : `questions()` (HasMany ordonné par `order`), `creator()` (BelongsTo User)
    - **CRUD complet** : Création, lecture, mise à jour, suppression via `QuestionnaireController`
    - **Autorisation** : Accès restreint via `QuestionnairePolicy` (Manager/ChefSuperviseur pour CRUD, tous pour lecture)
-   - **Fonctionnalités** : Ciblage par type (employés, superviseurs, groupes), gestion des statuts (publié/archivé)
+   - **Fonctionnalités** : Ciblage par type (employés, superviseurs), gestion des statuts (publié/archivé)
 
 5. **Question** (implémenté)
    - Questions dans les questionnaires avec support de types variés

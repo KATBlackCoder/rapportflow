@@ -79,10 +79,9 @@ Application web moderne de gestion de rapports et de collecte de données, const
 - [x] Tests complets (inscription, première connexion, authentification)
 
 #### Gestion des Questionnaires
-- [x] Modèles Questionnaire, Question et Group avec migrations complètes
+- [x] Modèles Questionnaire et Question avec migrations complètes
   - [x] Enums QuestionnaireStatus, QuestionnaireTargetType et QuestionType (PHP 8.1+)
-  - [x] Relations Eloquent (questions, creator, groups, conditionalQuestion, conditionalQuestions)
-  - [x] Table pivot questionnaire_groups pour ciblage par groupes
+  - [x] Relations Eloquent (questions, creator, conditionalQuestion, conditionalQuestions)
 - [x] Form Requests (StoreQuestionnaireRequest, UpdateQuestionnaireRequest)
   - [x] Validation complète incluant questions et conditions
   - [x] Support des indices conditionnels pour résolution des IDs après création
@@ -118,7 +117,6 @@ Application web moderne de gestion de rapports et de collecte de données, const
   - [x] Modèle Employee (employés) ✅
   - [x] Modèle Questionnaire ✅
   - [x] Modèle Question ✅
-  - [x] Modèle Group (groupes) ✅
   - [ ] Modèle Response (réponses)
   - [ ] Modèle Report (rapports)
 - [ ] Système de permissions et rôles

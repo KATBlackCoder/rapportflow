@@ -55,4 +55,12 @@ class Questionnaire extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    /**
+     * Get the responses for the questionnaire.
+     */
+    public function responses(): HasMany
+    {
+        return $this->hasMany(QuestionnaireResponse::class);
+    }
 }

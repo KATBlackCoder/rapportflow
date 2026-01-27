@@ -212,8 +212,6 @@ Routes générées :
 1. **Migrations**
    - `database/migrations/YYYY_MM_DD_HHMMSS_create_questionnaires_table.php`
    - `database/migrations/YYYY_MM_DD_HHMMSS_create_questions_table.php`
-   - `database/migrations/YYYY_MM_DD_HHMMSS_create_questionnaire_groups_table.php` (créée mais non utilisée actuellement)
-   - `database/migrations/YYYY_MM_DD_HHMMSS_create_groups_table.php` (créée mais non utilisée actuellement)
 
 2. **Modèles**
    - `app/Models/Questionnaire.php`
@@ -336,10 +334,9 @@ Routes générées :
 ## Critères d'acceptation
 
 ### Base de données et modèles
-- [ ] Migrations créées et testées (questionnaires, questions, questionnaire_groups)
+- [ ] Migrations créées et testées (questionnaires, questions)
 - [ ] Modèles `Questionnaire` et `Question` créés avec toutes les relations
 - [ ] Enums `QuestionnaireStatus`, `QuestionnaireTargetType` et `QuestionType` créés
-- [ ] Relation `belongsToMany` avec `Group` implémentée
 - [ ] Relations conditionnelles entre questions implémentées
 
 ### Permissions
@@ -351,7 +348,6 @@ Routes générées :
 ### Ciblage
 - [x] Champ `target_type` implémenté (employees, supervisors)
 - [x] Filtrage des questionnaires selon le `target_type` et la position de l'utilisateur
-- [ ] Ciblage par groupes spécifiques (simplifié pour cette version)
 
 ### Questions conditionnelles
 - [x] Champs `conditional_question_id` et `conditional_value` ajoutés
@@ -392,7 +388,6 @@ Routes générées :
 - Modèle `User` (existant)
 - Modèle `Employee` avec enum `Position` (existant)
 - Système d'authentification (existant)
-- Table `groups` (créée mais non utilisée actuellement)
 
 ## Liens
 

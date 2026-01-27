@@ -10,18 +10,32 @@ class QuestionnairePolicy
 {
     /**
      * Determine whether the user can view any models.
+     * Seuls les managers et chefs superviseurs peuvent voir la liste des questionnaires.
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        $employee = $user->employee;
+
+        if (! $employee) {
+            return false;
+        }
+
+        return in_array($employee->position, [Position::Manager, Position::ChefSuperviseur], true);
     }
 
     /**
      * Determine whether the user can view the model.
+     * Seuls les managers et chefs superviseurs peuvent voir un questionnaire.
      */
     public function view(User $user, Questionnaire $questionnaire): bool
     {
-        return true;
+        $employee = $user->employee;
+
+        if (! $employee) {
+            return false;
+        }
+
+        return in_array($employee->position, [Position::Manager, Position::ChefSuperviseur], true);
     }
 
     /**

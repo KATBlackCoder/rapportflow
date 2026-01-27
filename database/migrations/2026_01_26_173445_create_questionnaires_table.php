@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title', 255);
             $table->text('description')->nullable();
             $table->enum('status', ['published', 'archived'])->default('published')->index();
-            $table->enum('target_type', ['employees', 'supervisors', 'groups'])->index();
+            $table->enum('target_type', ['employees', 'supervisors'])->index();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });

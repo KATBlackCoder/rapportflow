@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('position', ['employer', 'superviseur', 'chef_superviseur', 'manager'])->index('idx_position');
             $table->string('department', 255)->nullable()->index('idx_department');
             $table->foreignId('manager_id')->nullable()->constrained('employees')->nullOnDelete()->index('idx_manager_id');
+            $table->foreignId('supervisor_id')->nullable()->after('manager_id')->constrained('employees')->nullOnDelete()->index('idx_supervisor_id');
             $table->decimal('salary', 10, 2)->nullable();
             $table->date('hire_date')->nullable();
             $table->enum('status', ['active', 'inactive', 'suspended', 'terminated'])->default('active')->index('idx_status');

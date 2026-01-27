@@ -14,9 +14,10 @@ import {
 import { dashboard } from '@/routes';
 import employees from '@/routes/employees';
 import questionnaires from '@/routes/questionnaires';
+import rapports from '@/routes/rapports';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { ClipboardList, LayoutGrid, Users } from 'lucide-vue-next';
+import { ClipboardList, FileText, LayoutGrid, Users } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
@@ -24,6 +25,15 @@ const page = usePage();
 const user = page.props.auth.user;
 
 const canViewEmployees = computed(() => {
+    if (!user?.employee) {
+        return false;
+    }
+
+    const position = user.employee.position;
+    return position === 'manager' || position === 'chef_superviseur';
+});
+
+const canViewQuestionnaires = computed(() => {
     if (!user?.employee) {
         return false;
     }
@@ -49,11 +59,20 @@ const mainNavItems = computed<NavItem[]>(() => {
         });
     }
 
-    // Tous les utilisateurs authentifiés peuvent voir les questionnaires
+    // Seuls les managers et chefs superviseurs peuvent voir les questionnaires
+    if (canViewQuestionnaires.value) {
+        items.push({
+            title: 'Questionnaires',
+            href: questionnaires.index().url,
+            icon: ClipboardList,
+        });
+    }
+
+    // Tous les utilisateurs authentifiés peuvent accéder aux rapports
     items.push({
-        title: 'Questionnaires',
-        href: questionnaires.index().url,
-        icon: ClipboardList,
+        title: 'Rapport',
+        href: rapports.index().url,
+        icon: FileText,
     });
 
     return items;

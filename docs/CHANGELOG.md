@@ -25,10 +25,9 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Added
 - Système complet de gestion des questionnaires (TASK-003)
-  - Modèles Questionnaire, Question et Group avec migrations complètes
+  - Modèles Questionnaire et Question avec migrations complètes
   - Enums QuestionnaireStatus, QuestionnaireTargetType et QuestionType (PHP 8.1+)
-  - Relations Eloquent (questions, creator, groups, conditionalQuestion, conditionalQuestions)
-  - Table pivot questionnaire_groups pour ciblage par groupes
+  - Relations Eloquent (questions, creator, conditionalQuestion, conditionalQuestions)
   - Form Requests StoreQuestionnaireRequest et UpdateQuestionnaireRequest avec validation complète
   - QuestionnaireController avec CRUD complet et transactions pour cohérence
   - QuestionnairePolicy pour autorisation (Manager/ChefSuperviseur pour CRUD, tous pour lecture)

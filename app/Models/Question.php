@@ -67,4 +67,12 @@ class Question extends Model
     {
         return $this->hasMany(Question::class, 'conditional_question_id');
     }
+
+    /**
+     * Get the responses for the question.
+     */
+    public function responses(): HasMany
+    {
+        return $this->hasMany(QuestionnaireResponse::class);
+    }
 }
