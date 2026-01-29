@@ -120,10 +120,14 @@ Application web moderne de gestion de rapports et de collecte de données, const
 #### Dashboard adapté aux rôles (TASK-005)
 - [x] DashboardController dédié ; route dashboard pointe vers le contrôleur
 - [x] Stats et listes par position (employer, superviseur, chef_superviseur, manager) avec requêtes agrégées (pas de N+1)
+- [x] Stats enrichies : mySubmissionsLast30DaysCount, teamTotalSubmissionsCount ; indicateurs par rôle (employer : questionnaires soumis, corrections ; superviseur : effectif équipe, soumissions ; chef/manager : personnel, soumissions)
 - [x] Props Inertia : stats, recentReports, pendingCorrections, lastReport, availableQuestionnairesCount, canAccess*
-- [x] Page Dashboard refactorée : dossier `resources/js/pages/Dashboard/` avec Index.vue et types.ts
-- [x] Sections conditionnelles par rôle (Card, Badge, Button shadcn-vue) ; liens vers rapports, questionnaires, employees
+- [x] Page Dashboard refactorée : dossier `resources/js/pages/Dashboard/` (Index.vue, types.ts, utils.ts, useDashboardPosition, StatCard, MetricCard, QuickActions, RecentActivityCard)
+- [x] Affichage des indicateurs en cartes (MetricCard une par stat) ; sections conditionnelles par rôle
 - [x] Tests DashboardTest (accès, props pour utilisateur avec employee)
+
+#### Interface & Navigation
+- [x] Bouton bascule thème (dark mode) dans la sidebar (au-dessus du bloc utilisateur) et dans le header ; même logique que Paramètres > Apparence (useAppearance, localStorage + cookie)
 
 ## En Cours
 

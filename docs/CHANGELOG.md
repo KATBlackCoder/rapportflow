@@ -10,7 +10,8 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 ## [Unreleased]
 
 ### Added
-- **Dashboard adapté aux rôles (TASK-005)** : DashboardController avec stats et listes par position (employer, superviseur, chef_superviseur, manager) ; props Inertia (stats, recentReports, pendingCorrections, lastReport, availableQuestionnairesCount, canAccess*) ; requêtes agrégées sans N+1 ; tests DashboardTest (accès, props pour utilisateur avec employee)
+- **Bouton bascule thème (dark mode)** dans la sidebar (au-dessus du bloc utilisateur) et dans le header ; même logique que Paramètres > Apparence (useAppearance, bascule light/dark)
+- **Dashboard adapté aux rôles (TASK-005)** : DashboardController avec stats et listes par position (employer, superviseur, chef_superviseur, manager) ; props Inertia (stats, recentReports, pendingCorrections, lastReport, availableQuestionnairesCount, canAccess*) ; requêtes agrégées sans N+1 ; stats enrichies (mySubmissionsLast30DaysCount, teamTotalSubmissionsCount) ; tests DashboardTest (accès, props pour utilisateur avec employee)
 - **TASK-005** : Spécification Dashboard adapté aux rôles (`docs/tasks/TASK-005.md`) — contenu par rôle (employer, superviseur, chef_superviseur, manager), spécifications backend/frontend
 - **Page Rapport (TASK-004)** : Page principale avec cartes par rôle ; remplissage questionnaires (tableau + mode copier-coller) ; Mes rapports, Corrections, Analyse ; RapportController avec filtres par rôle (supervisedEmployees pour superviseurs)
 - **Hiérarchie Employee** : Champ `supervisor_id` (employé → superviseur obligatoire) ; validation manager/supervisor par département ; relations supervisedEmployees, supervisedSupervisors, supervisedChefSuperviseurs ; DatabaseSeeder avec hiérarchie par département (Marketing)
@@ -29,7 +30,7 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 - Modèle Employee avec migration complète, EmployeePolicy, Page Employees, CRUD, authentification personnalisée (username, première connexion), autorisation via Policies (voir détails ci-dessous)
 
 ### Changed
-- **Dashboard** : Refactorisation en dossier `resources/js/pages/Dashboard/` — page principale `Index.vue`, types partagés dans `types.ts` ; Inertia rend `Dashboard/Index`
+- **Dashboard** : Refactorisation en dossier `resources/js/pages/Dashboard/` — `Index.vue`, `types.ts`, `utils.ts`, composable `useDashboardPosition`, composants `StatCard`, `MetricCard` (une carte par indicateur), `QuickActions`, `RecentActivityCard` ; affichage des indicateurs par rôle en cartes ; Inertia rend `Dashboard/Index`
 - **Questionnaires** : Amélioration de la gestion des questions conditionnelles
   - Questions conditionnelles disponibles pour tous les types de questions
   - Valeur conditionnelle via Select basé sur les options de la question parente

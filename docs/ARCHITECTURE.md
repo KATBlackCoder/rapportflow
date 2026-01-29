@@ -546,13 +546,18 @@ form.submit(update())
 - **Contrôleur** : `DashboardController@index` ; route `dashboard` pointe vers ce contrôleur.
 - **Objectif** : Page d'accueil adaptée au rôle (`employer`, `superviseur`, `chef_superviseur`, `manager`).
 - **Données partagées** : `auth.user.employee` (id, position, department) via HandleInertiaRequests.
-- **Props Inertia** : `stats` (myReportsCount, pendingCorrectionsCount, teamReportsCount, etc.), `recentReports`, `pendingCorrections`, `lastReport`, `availableQuestionnairesCount`, `canAccessQuestionnaires`, `canAccessEmployees`, `canExportReports`.
+- **Props Inertia** : `stats` (myReportsCount, mySubmissionsLast30DaysCount, pendingCorrectionsCount, teamReportsCount, teamTotalSubmissionsCount, supervisedEmployeesCount, employeesCount, supervisorsCount, questionnairesCount, totalReportsCount), `recentReports`, `pendingCorrections`, `lastReport`, `availableQuestionnairesCount`, `canAccess*`, `canExportReports`.
 - **Contenu par rôle** :
-  - **Employé** : Rapports à faire (questionnaires disponibles), Mes rapports, À corriger, action « Faire un rapport ».
-  - **Superviseur** : Idem + Mon équipe, Rapports de l'équipe, liens « Corriger », « Analyser ».
-  - **Chef superviseur** : Vue équipe/département (superviseurs, employés), Questionnaires, Rapports, corrections, Export, lien Employés.
-  - **Manager** : Vue globale, KPIs, Activité récente, liens Questionnaires, Employés, Analyser, Export.
-- **Frontend** : Dossier `resources/js/pages/Dashboard/` — `Index.vue` (page principale, sections conditionnelles par rôle avec Card, Badge, Button shadcn-vue) ; `types.ts` (types partagés : DashboardStats, RecentReport, PendingCorrection, LastReport, DashboardProps). Composant Inertia : `Dashboard/Index`.
+  - **Employé** : Rapports à faire, indicateurs (questionnaires soumis, soumissions 30j, demandés en correction), Mes rapports, À corriger, action « Faire un rapport ».
+  - **Superviseur** : Idem + effectif équipe, total soumissions équipe, soumissions 30j, liens « Corriger », « Analyser ».
+  - **Chef superviseur** : Total personnel, superviseurs, questionnaires publiés, total soumissions, à corriger, Export, lien Employés.
+  - **Manager** : Vue globale (mêmes indicateurs), Activité récente, liens Questionnaires, Employés, Analyser, Export.
+- **Frontend** : Dossier `resources/js/pages/Dashboard/` — `Index.vue` (page principale) ; `types.ts` ; `utils.ts` (formatDate) ; `useDashboardPosition.ts` (composable position + rôles) ; `StatCard.vue`, `MetricCard.vue` (une carte par indicateur) ; `QuickActions.vue`, `RecentActivityCard.vue`. Composant Inertia : `Dashboard/Index`.
+
+## Thème (Apparence)
+
+- **Paramètres** : Page Settings > Apparence avec onglets Light / Dark / System (`AppearanceTabs`, `useAppearance`).
+- **Bascule rapide** : Bouton thème (lune / soleil) dans la **sidebar** (SidebarFooter, au-dessus du bloc utilisateur) et dans l’**AppHeader** (à gauche de l’avatar). Même logique que la page Apparence : `useAppearance()`, `updateAppearance('light' | 'dark')`, persistance localStorage + cookie, `updateTheme()` pour la classe `dark` sur le document.
 
 ---
 

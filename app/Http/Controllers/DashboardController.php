@@ -69,8 +69,10 @@ class DashboardController extends Controller
     {
         $stats = [
             'myReportsCount' => 0,
+            'mySubmissionsLast30DaysCount' => 0,
             'pendingCorrectionsCount' => 0,
             'teamReportsCount' => 0,
+            'teamTotalSubmissionsCount' => 0,
             'supervisedEmployeesCount' => 0,
             'questionnairesCount' => 0,
             'employeesCount' => 0,
@@ -86,6 +88,11 @@ class DashboardController extends Controller
                 ->whereNotNull('submitted_at')
                 ->groupBy('questionnaire_id', 'row_identifier')
                 ->count();
+            $stats['mySubmissionsLast30DaysCount'] = (int) DB::table('questionnaire_responses')
+                ->where('respondent_id', $userId)
+                ->where('submitted_at', '>=', $periodStart)
+                ->groupBy('questionnaire_id', 'row_identifier')
+                ->count(DB::raw('1'));
             $stats['pendingCorrectionsCount'] = QuestionnaireResponse::query()
                 ->where('respondent_id', $userId)
                 ->where('status', ResponseStatus::ReturnedForCorrection)
@@ -100,6 +107,11 @@ class DashboardController extends Controller
                 $stats['teamReportsCount'] = (int) DB::table('questionnaire_responses')
                     ->whereIn('respondent_id', $supervisedUserIds)
                     ->where('submitted_at', '>=', $periodStart)
+                    ->groupBy('questionnaire_id', 'respondent_id', 'row_identifier')
+                    ->count(DB::raw('1'));
+                $stats['teamTotalSubmissionsCount'] = (int) DB::table('questionnaire_responses')
+                    ->whereIn('respondent_id', $supervisedUserIds)
+                    ->whereNotNull('submitted_at')
                     ->groupBy('questionnaire_id', 'respondent_id', 'row_identifier')
                     ->count(DB::raw('1'));
             }

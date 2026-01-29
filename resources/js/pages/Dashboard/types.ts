@@ -1,7 +1,9 @@
 export type DashboardStats = {
     myReportsCount?: number;
+    mySubmissionsLast30DaysCount?: number;
     pendingCorrectionsCount?: number;
     teamReportsCount?: number;
+    teamTotalSubmissionsCount?: number;
     supervisedEmployeesCount?: number;
     questionnairesCount?: number;
     employeesCount?: number;

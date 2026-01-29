@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Link, usePage } from '@inertiajs/vue3';
+import { ClipboardList, FileText, LayoutGrid, Moon, Sun, Users } from 'lucide-vue-next';
+import { computed } from 'vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -11,14 +14,18 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { useAppearance } from '@/composables/useAppearance';
 import { dashboard } from '@/routes';
 import employees from '@/routes/employees';
 import questionnaires from '@/routes/questionnaires';
 import rapports from '@/routes/rapports';
 import { type NavItem } from '@/types';
-import { Link, usePage } from '@inertiajs/vue3';
-import { ClipboardList, FileText, LayoutGrid, Users } from 'lucide-vue-next';
-import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
 const page = usePage();
@@ -79,6 +86,12 @@ const mainNavItems = computed<NavItem[]>(() => {
 });
 
 const footerNavItems: NavItem[] = [];
+
+const { resolvedAppearance, updateAppearance } = useAppearance();
+
+function toggleTheme() {
+    updateAppearance(resolvedAppearance.value === 'dark' ? 'light' : 'dark');
+}
 </script>
 
 <template>
@@ -101,6 +114,35 @@ const footerNavItems: NavItem[] = [];
 
         <SidebarFooter>
             <NavFooter :items="footerNavItems" />
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <TooltipProvider :delay-duration="0">
+                        <Tooltip>
+                            <TooltipTrigger as-child>
+                                <SidebarMenuButton
+                                    class="w-full cursor-pointer"
+                                    @click="toggleTheme"
+                                >
+                                    <Moon
+                                        v-if="resolvedAppearance === 'light'"
+                                        class="size-5 shrink-0"
+                                    />
+                                    <Sun
+                                        v-else
+                                        class="size-5 shrink-0"
+                                    />
+                                    <span class="truncate group-data-[collapsible=icon]:hidden">
+                                        {{ resolvedAppearance === 'dark' ? 'Mode clair' : 'Mode sombre' }}
+                                    </span>
+                                </SidebarMenuButton>
+                            </TooltipTrigger>
+                            <TooltipContent side="right">
+                                <p>{{ resolvedAppearance === 'dark' ? 'Mode clair' : 'Mode sombre' }}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </SidebarMenuItem>
+            </SidebarMenu>
             <NavUser />
         </SidebarFooter>
     </Sidebar>
