@@ -7,9 +7,9 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified', \App\Http\Middleware\RequirePasswordChange::class])->name('dashboard');
+Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', \App\Http\Middleware\RequirePasswordChange::class])
+    ->name('dashboard');
 
 Route::middleware(['auth', 'verified', \App\Http\Middleware\RequirePasswordChange::class])->group(function () {
     Route::get('first-login', [\App\Http\Controllers\Auth\FirstLoginController::class, 'show'])->name('first-login.show');

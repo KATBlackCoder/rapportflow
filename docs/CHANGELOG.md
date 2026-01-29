@@ -9,21 +9,12 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
-### Changed
-- **Questionnaires** : Amélioration de la gestion des questions conditionnelles
-  - Questions conditionnelles maintenant disponibles pour tous les types de questions (pas seulement select/checkbox/radio)
-  - Valeur conditionnelle remplacée par un Select basé sur les options de la question parente (au lieu d'un Input texte)
-  - Correction de la gestion des retours à la ligne dans le textarea des options (white-space: pre-wrap)
-  - Stockage séparé du texte brut des options pour préserver l'affichage des retours à la ligne
-  - Simplification du ciblage : suppression du type "groups", conservation uniquement de "employees" et "supervisors"
-
-### Fixed
-- **Questionnaires** : Correction de la violation de contrainte de clé étrangère lors de la mise à jour
-  - Utilisation de `conditional_question_index` au lieu de `conditional_question_id` lors de la soumission
-  - Résolution correcte des IDs conditionnels après création des questions dans le contrôleur
-  - Gestion cohérente entre création et mise à jour pour éviter les erreurs de contrainte
-
 ### Added
+- **Dashboard adapté aux rôles (TASK-005)** : DashboardController avec stats et listes par position (employer, superviseur, chef_superviseur, manager) ; props Inertia (stats, recentReports, pendingCorrections, lastReport, availableQuestionnairesCount, canAccess*) ; requêtes agrégées sans N+1 ; tests DashboardTest (accès, props pour utilisateur avec employee)
+- **TASK-005** : Spécification Dashboard adapté aux rôles (`docs/tasks/TASK-005.md`) — contenu par rôle (employer, superviseur, chef_superviseur, manager), spécifications backend/frontend
+- **Page Rapport (TASK-004)** : Page principale avec cartes par rôle ; remplissage questionnaires (tableau + mode copier-coller) ; Mes rapports, Corrections, Analyse ; RapportController avec filtres par rôle (supervisedEmployees pour superviseurs)
+- **Hiérarchie Employee** : Champ `supervisor_id` (employé → superviseur obligatoire) ; validation manager/supervisor par département ; relations supervisedEmployees, supervisedSupervisors, supervisedChefSuperviseurs ; DatabaseSeeder avec hiérarchie par département (Marketing)
+- **QuestionnaireResponse** : Modèle et migration pour réponses aux questionnaires (status submitted/returned_for_correction, correction_reason, reviewed_by)
 - Système complet de gestion des questionnaires (TASK-003)
   - Modèles Questionnaire et Question avec migrations complètes
   - Enums QuestionnaireStatus, QuestionnaireTargetType et QuestionType (PHP 8.1+)
@@ -32,62 +23,31 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
   - QuestionnaireController avec CRUD complet et transactions pour cohérence
   - QuestionnairePolicy pour autorisation (Manager/ChefSuperviseur pour CRUD, tous pour lecture)
   - Pages Vue Inertia complètes (Index, Create, Edit, Show)
-    - Index avec filtres (recherche, statut) et pagination
-    - Create/Edit avec gestion dynamique des questions
-    - Show avec affichage détaillé en lecture seule
   - Support de 8 types de questions : text, textarea, radio, checkbox, select, number, date, email
-  - Gestion des options pour questions à choix multiples (radio, checkbox, select)
   - Ciblage par type : employees, supervisors
-  - Structure pour questions conditionnelles (conditional_question_id, conditional_value)
   - Interface utilisateur avec shadcn-vue (Table, Card, Dialog, Select, Badge, etc.)
-  - Réorganisation des questions (flèches haut/bas)
-  - Routes resource ajoutées dans web.php
-- Modèle Employee avec migration complète
-  - Enums Position et EmployeeStatus (PHP 8.1+)
-  - Relations Eloquent (user, manager, subordinates)
-  - Accessors pour normalisation des noms (affichage et login)
-  - Factory et Seeder avec création d'utilisateurs associés
-  - Form Requests (StoreEmployeeRequest, UpdateEmployeeRequest)
-  - Tests complets (validation, relations, contraintes, normalisation)
-- Système d'authentification personnalisé
-  - Authentification par username (format : `lastname@phone.org`)
-  - Génération automatique de mot de passe par défaut (`ML+phone`)
-  - Première connexion obligatoire avec choix de mot de passe
-  - Middleware RequirePasswordChange
-  - Page FirstLogin avec interface boutons (shadcn-vue)
-  - Modification de Register.vue pour créer Employee + User
-  - Modification de Login.vue pour utiliser username
-  - Tests complets (inscription, première connexion, authentification)
-- Organisation des enums dans `app/Enums/`
-- Seeder avec employés de test (Manager, Chef Superviseur, Superviseur, Employer)
-- Page Employees avec gestion complète
-  - Page Index avec tableau utilisant shadcn-vue Table
-  - Autorisation via EmployeePolicy (Manager/ChefSuperviseur uniquement)
-  - Recherche en temps réel côté client
-  - Pagination avec composants shadcn-vue Button
-  - Affichage avec Avatar, Badges pour statut et position
-  - Navigation conditionnelle dans AppSidebar (lien visible uniquement pour Manager/ChefSuperviseur)
-- CRUD complet pour les employés
-  - Composant EmployeeFormDialog pour créer/éditer
-  - Formulaire avec validation Inertia useForm
-  - Champs : ID employé, prénom, nom, email, téléphone, poste, statut, département, manager, salaire, date d'embauche
-  - Suppression avec dialog de confirmation
-  - Menu dropdown avec actions (Modifier, Supprimer) sur chaque ligne
-  - Gestion des erreurs de validation affichées sous chaque champ
-- Système d'autorisation avec Policies
-  - EmployeePolicy pour gérer l'accès aux opérations CRUD
-  - Vérification basée sur la position Employee (Manager/ChefSuperviseur)
-  - Partage des données employee via HandleInertiaRequests pour l'UI
-  - Tests d'autorisation (EmployeeAccessTest)
+- Modèle Employee avec migration complète, EmployeePolicy, Page Employees, CRUD, authentification personnalisée (username, première connexion), autorisation via Policies (voir détails ci-dessous)
 
 ### Changed
+- **Dashboard** : Refactorisation en dossier `resources/js/pages/Dashboard/` — page principale `Index.vue`, types partagés dans `types.ts` ; Inertia rend `Dashboard/Index`
+- **Questionnaires** : Amélioration de la gestion des questions conditionnelles
+  - Questions conditionnelles disponibles pour tous les types de questions
+  - Valeur conditionnelle via Select basé sur les options de la question parente
+  - Gestion des retours à la ligne dans le textarea des options (white-space: pre-wrap)
+  - Ciblage simplifié : employees et supervisors uniquement
 - Retrait de l'authentification à deux facteurs (2FA) de l'application
 - Champ `phone` dans Employee rendu obligatoire (NOT NULL)
 - Structure des enums : déplacés de `app/` vers `app/Enums/` avec namespace `App\Enums`
-- UserFactory : Ajout de la génération automatique de `username` dans la factory
-- HandleInertiaRequests : Partage des données employee de l'utilisateur pour l'UI
+- UserFactory : génération automatique de `username` ; HandleInertiaRequests : partage des données employee pour l'UI
 
 ### Fixed
+- **Questionnaires** : Correction de la violation de contrainte de clé étrangère lors de la mise à jour
+  - Utilisation de `conditional_question_index` au lieu de `conditional_question_id` lors de la soumission
+  - Résolution correcte des IDs conditionnels après création des questions dans le contrôleur
+  - Gestion cohérente entre création et mise à jour pour éviter les erreurs de contrainte
+- **QuestionnairePolicy** : viewAny et view restreints à Manager et ChefSuperviseur (employés et superviseurs n'ont plus accès à la page Questionnaires)
+- **AppSidebar** : Lien « Questionnaires » affiché uniquement pour Manager et ChefSuperviseur (`canViewQuestionnaires`)
+- **Migrations** : Consolidation — `create_users_table` (username, password_changed_at, email nullable) ; `create_employees_table` (supervisor_id) ; suppression migrations two_factor, add_username, add_supervisor_id, optimize_database_indexes
 - Correction de la validation dans FirstLoginController pour permettre l'action "keep" sans password
 - Correction de la redirection vers le dashboard après "Keep the default password"
 - Ajout de l'import manquant `Model` dans le modèle Employee
@@ -111,17 +71,6 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 - Configuration Fortify : retrait de `Features::twoFactorAuthentication()`
 - `FortifyServiceProvider` : retrait de la vue `twoFactorChallengeView` et du rate limiter `two-factor`
 - `UserFactory` : retrait de la méthode `withTwoFactor()` et des champs 2FA
-
----
-
-## [Unreleased]
-
-### À venir
-- Système de gestion des employés
-- Création et gestion de questionnaires
-- Collecte de données via questionnaires
-- Génération automatisée de rapports
-- Système de permissions et rôles
 
 ---
 
@@ -194,4 +143,4 @@ et ce projet adhère à [Semantic Versioning](https://semver.org/lang/fr/).
 
 ---
 
-*Dernière mise à jour : 26 janvier 2025*
+*Dernière mise à jour : 29 janvier 2026*

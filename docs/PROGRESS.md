@@ -21,7 +21,6 @@ Application web moderne de gestion de rapports et de collecte de données, const
   - [x] Connexion/Déconnexion
   - [x] Réinitialisation de mot de passe
   - [x] Vérification d'email
-  - [x] Authentification à deux facteurs (2FA) avec QR codes
 - [x] Configuration Laravel Wayfinder pour routes TypeScript
 - [x] Configuration Tailwind CSS v4 avec shadcn-vue
 - [x] Configuration TypeScript avec Vue 3
@@ -35,7 +34,6 @@ Application web moderne de gestion de rapports et de collecte de données, const
   - [x] Profil utilisateur (édition, suppression)
   - [x] Gestion du mot de passe
   - [x] Apparence (thème clair/sombre)
-  - [x] Authentification à deux facteurs
 - [x] Layout avec sidebar et header
 - [x] Navigation principale
 
@@ -110,6 +108,23 @@ Application web moderne de gestion de rapports et de collecte de données, const
   - [x] Interface utilisateur complète avec validation
 - [x] Interface utilisateur avec shadcn-vue (Table, Card, Dialog, Select, Badge, etc.)
 
+#### Page Rapport (TASK-004)
+- [x] Modèle QuestionnaireResponse et migration
+- [x] Page Rapport avec options par rôle (cartes : Faire un rapport, Mes rapports, Corriger, Analyser)
+- [x] Remplissage des questionnaires (Show.vue) : tableau ligne par ligne, mode copier-coller, instructions et exemples
+- [x] Mes rapports (ShowMyReport.vue), corrections (ShowCorrection.vue), analyse (Analysis.vue, ShowAnalysis.vue)
+- [x] Hiérarchie Employee : supervisor_id (employé → superviseur), manager par département (superviseur → chef_superviseur → manager)
+- [x] Accès Questionnaires restreint à Manager/ChefSuperviseur (QuestionnairePolicy viewAny/view, Sidebar conditionnelle)
+- [ ] Export Excel (placeholder en place)
+
+#### Dashboard adapté aux rôles (TASK-005)
+- [x] DashboardController dédié ; route dashboard pointe vers le contrôleur
+- [x] Stats et listes par position (employer, superviseur, chef_superviseur, manager) avec requêtes agrégées (pas de N+1)
+- [x] Props Inertia : stats, recentReports, pendingCorrections, lastReport, availableQuestionnairesCount, canAccess*
+- [x] Page Dashboard refactorée : dossier `resources/js/pages/Dashboard/` avec Index.vue et types.ts
+- [x] Sections conditionnelles par rôle (Card, Badge, Button shadcn-vue) ; liens vers rapports, questionnaires, employees
+- [x] Tests DashboardTest (accès, props pour utilisateur avec employee)
+
 ## En Cours
 
 ### Phase 1 : Fondations (Actuel)
@@ -117,13 +132,13 @@ Application web moderne de gestion de rapports et de collecte de données, const
   - [x] Modèle Employee (employés) ✅
   - [x] Modèle Questionnaire ✅
   - [x] Modèle Question ✅
-  - [ ] Modèle Response (réponses)
-  - [ ] Modèle Report (rapports)
+  - [x] Modèle QuestionnaireResponse (réponses aux questionnaires) ✅
+  - [ ] Modèle Report (rapports générés)
 - [ ] Système de permissions et rôles
-  - [x] Hiérarchie organisationnelle (manager/subordinates) ✅
-  - [x] Autorisation basée sur les positions (EmployeePolicy) ✅
+  - [x] Hiérarchie organisationnelle (manager/subordinates, supervisor/supervisedEmployees) ✅
+  - [x] Autorisation basée sur les positions (EmployeePolicy, QuestionnairePolicy) ✅
   - [x] Accès restreint aux employés (Manager/ChefSuperviseur uniquement) ✅
-  - [x] Autorisation pour questionnaires (QuestionnairePolicy) ✅
+  - [x] Accès restreint aux questionnaires (Manager/ChefSuperviseur uniquement pour liste et détails) ✅
   - [ ] Permissions granulaires par fonctionnalité
 
 ---
@@ -154,22 +169,23 @@ Application web moderne de gestion de rapports et de collecte de données, const
 - [ ] Attribution de questionnaires aux employés
 
 ### Phase 4 : Collecte de Données
-- [ ] Interface de réponse aux questionnaires
-- [ ] Sauvegarde progressive des réponses
-- [ ] Validation des réponses
-- [ ] Suivi du statut de complétion
+- [x] Interface de réponse aux questionnaires (Page Rapport - TASK-004) ✅
+- [x] Remplissage tableau + mode copier-coller
+- [x] Sauvegarde des réponses (QuestionnaireResponse)
+- [x] Mes rapports, corrections, analyse selon rôle
 - [ ] Notifications et rappels
 
 ### Phase 5 : Génération de Rapports
+- [x] Dashboard adapté aux rôles (TASK-005)
 - [ ] Moteur de génération de rapports
 - [ ] Templates de rapports personnalisables
 - [ ] Agrégation et analyse des données
 - [ ] Visualisations (graphiques, tableaux)
-- [ ] Export PDF/Excel
+- [ ] Export PDF/Excel (placeholder en place pour managers/chefs superviseurs)
 - [ ] Planification de rapports automatiques
 
 ### Phase 6 : Fonctionnalités Avancées
-- [ ] Tableau de bord analytique
+- [ ] Tableau de bord analytique (complément optionnel TASK-005)
 - [ ] Notifications en temps réel
 - [ ] API REST pour intégrations externes
 - [ ] Audit trail complet
@@ -195,12 +211,11 @@ Aucun blocage actuellement.
 
 ## Prochaines Étapes Immédiates
 
-1. **Amélioration de la gestion des employés** : Ajouter l'export des données, filtres avancés
-2. **Tests pour questionnaires** : Créer les tests Pest complets (CRUD, validation, permissions, questions conditionnelles)
-3. **Logique conditionnelle frontend** : Implémenter l'affichage dynamique des questions conditionnelles lors du remplissage
-4. **Collecte de réponses** : Implémenter TASK-004 (Page Rapport - Remplissage des questionnaires)
-5. **Système de permissions avancé** : Permissions granulaires par fonctionnalité
+1. **Export Excel** : Implémenter l'export dans RapportController pour managers/chefs superviseurs
+2. **Tests** : Tests Pest pour rapports (TASK-004) et questionnaires
+3. **Amélioration de la gestion des employés** : Export des données, filtres avancés
+4. **Système de permissions avancé** : Permissions granulaires par fonctionnalité
 
 ---
 
-*Dernière mise à jour : 26 janvier 2025*
+*Dernière mise à jour : 29 janvier 2026*

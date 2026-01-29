@@ -439,9 +439,9 @@ form.submit(update())
 ### Autorisation
 - **Policies Laravel** : Utilisation de Policies pour l'autorisation basée sur les positions
   - `EmployeePolicy` : Autorise uniquement Manager et ChefSuperviseur pour les opérations CRUD
-  - `QuestionnairePolicy` : Autorise uniquement Manager et ChefSuperviseur pour les opérations CRUD, tous pour lecture
+  - `QuestionnairePolicy` : Autorise uniquement Manager et ChefSuperviseur pour viewAny, view, create, update, delete (employés et superviseurs n'ont pas accès à la page Questionnaires) ; Sidebar masque le lien Questionnaires pour employés/superviseurs
   - Vérification via `Gate::authorize()` dans les contrôleurs
-- Hiérarchie organisationnelle : Basée sur la relation `manager_id` dans Employee
+- Hiérarchie organisationnelle : `manager_id` (superviseur→chef_superviseur→manager, même département) ; `supervisor_id` (employer→superviseur, obligatoire pour les employés)
 
 ---
 
@@ -457,8 +457,9 @@ form.submit(update())
 2. **Employee** (implémenté)
    - Informations sur les employés
    - Relation avec User (belongsTo)
-   - Hiérarchie organisationnelle (manager/subordinates)
-   - Champs : `id`, `user_id`, `employee_id`, `first_name`, `last_name`, `email`, `phone`, `position`, `department`, `manager_id`, `salary`, `hire_date`, `status`
+   - Hiérarchie : `manager_id` (superviseur→chef_superviseur, chef_superviseur→manager, même département) ; `supervisor_id` (employer→superviseur, obligatoire)
+   - Relations : user(), manager(), supervisor(), subordinates(), supervisedEmployees(), supervisedSupervisors(), supervisedChefSuperviseurs()
+   - Champs : `id`, `user_id`, `employee_id`, `first_name`, `last_name`, `email`, `phone`, `position`, `department`, `manager_id`, `supervisor_id`, `salary`, `hire_date`, `status`
    - Enums : `Position` (employer, superviseur, chef_superviseur, manager), `EmployeeStatus` (active, inactive, suspended, terminated)
    - Accessors : `display_last_name` (MAJUSCULES sans accents), `normalizeLastNameForLogin()` (minuscules sans accents)
    - **CRUD complet** : Création, lecture, mise à jour, suppression via `EmployeeController`
@@ -471,7 +472,7 @@ form.submit(update())
    - Enums : `QuestionnaireStatus` (published, archived), `QuestionnaireTargetType` (employees, supervisors)
    - Relations : `questions()` (HasMany ordonné par `order`), `creator()` (BelongsTo User)
    - **CRUD complet** : Création, lecture, mise à jour, suppression via `QuestionnaireController`
-   - **Autorisation** : Accès restreint via `QuestionnairePolicy` (Manager/ChefSuperviseur pour CRUD, tous pour lecture)
+   - **Autorisation** : Accès restreint via `QuestionnairePolicy` (Manager/ChefSuperviseur pour viewAny, view, CRUD ; employés et superviseurs n'ont pas accès)
    - **Fonctionnalités** : Ciblage par type (employés, superviseurs), gestion des statuts (publié/archivé)
 
 5. **Question** (implémenté)
@@ -483,9 +484,12 @@ form.submit(update())
    - **Options** : Stockées en JSON pour questions à choix multiples (radio, checkbox, select)
    - **Ordre** : Gestion de l'ordre d'affichage via champ `order`
 
-6. **Response** (à créer)
-   - Réponses aux questionnaires
-   - Relation avec Employee et Question
+6. **QuestionnaireResponse** (implémenté)
+   - Réponses aux questionnaires (table `questionnaire_responses`)
+   - Champs : questionnaire_id, question_id, respondent_id, row_identifier, response (JSON), status, submitted_at, reviewed_by, reviewed_at, correction_reason
+   - Relations : questionnaire(), question(), respondent(), reviewer()
+   - Enum ResponseStatus : submitted, returned_for_correction
+   - Utilisé par la page Rapport (TASK-004) : remplissage, mes rapports, corrections, analyse
 
 7. **Report** (à créer)
    - Rapports générés
@@ -537,4 +541,19 @@ form.submit(update())
 
 ---
 
-*Dernière mise à jour : 26 janvier 2025*
+## Dashboard (TASK-005)
+
+- **Contrôleur** : `DashboardController@index` ; route `dashboard` pointe vers ce contrôleur.
+- **Objectif** : Page d'accueil adaptée au rôle (`employer`, `superviseur`, `chef_superviseur`, `manager`).
+- **Données partagées** : `auth.user.employee` (id, position, department) via HandleInertiaRequests.
+- **Props Inertia** : `stats` (myReportsCount, pendingCorrectionsCount, teamReportsCount, etc.), `recentReports`, `pendingCorrections`, `lastReport`, `availableQuestionnairesCount`, `canAccessQuestionnaires`, `canAccessEmployees`, `canExportReports`.
+- **Contenu par rôle** :
+  - **Employé** : Rapports à faire (questionnaires disponibles), Mes rapports, À corriger, action « Faire un rapport ».
+  - **Superviseur** : Idem + Mon équipe, Rapports de l'équipe, liens « Corriger », « Analyser ».
+  - **Chef superviseur** : Vue équipe/département (superviseurs, employés), Questionnaires, Rapports, corrections, Export, lien Employés.
+  - **Manager** : Vue globale, KPIs, Activité récente, liens Questionnaires, Employés, Analyser, Export.
+- **Frontend** : Dossier `resources/js/pages/Dashboard/` — `Index.vue` (page principale, sections conditionnelles par rôle avec Card, Badge, Button shadcn-vue) ; `types.ts` (types partagés : DashboardStats, RecentReport, PendingCorrection, LastReport, DashboardProps). Composant Inertia : `Dashboard/Index`.
+
+---
+
+*Dernière mise à jour : 29 janvier 2026*

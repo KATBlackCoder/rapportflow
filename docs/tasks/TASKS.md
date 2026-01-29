@@ -598,4 +598,26 @@ Créer une page "Rapport" permettant aux **employés et superviseurs** de :
 
 ---
 
-*Dernière mise à jour : 25 janvier 2026*
+## [TASK-005] Dashboard adapté aux rôles
+
+**Statut :** 🔴 À faire  
+**Priorité :** Moyenne  
+**Assigné à :** -  
+**Date de création :** 2026-01-27  
+**Dépend de :** TASK-004
+
+> 📄 **Voir le fichier détaillé :** [`TASK-005.md`](./TASK-005.md)
+
+### Description
+
+Remplacer le Dashboard actuel (placeholders) par une page d'accueil adaptée au rôle de l'utilisateur (employer, superviseur, chef_superviseur, manager). Chaque rôle voit des statistiques et des actions pertinentes : rapports à faire / à corriger, activité de l'équipe, KPIs, liens vers Questionnaires, Employés et Analyse des rapports.
+
+### Liens
+
+- Fichier de tâche : [`docs/tasks/TASK-005.md`](./TASK-005.md)
+- Documentation : `docs/ARCHITECTURE.md`
+- Tâche liée : TASK-004 (Page Rapport)
+
+---
+
+*Dernière mise à jour : 27 janvier 2026*
